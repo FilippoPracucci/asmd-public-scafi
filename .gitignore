@@ -108,5 +108,6 @@ project/plugins/project/
 ### Scala ###
 *.class
 *.log
+.bsp/
 
 # End of https://www.toptal.com/developers/gitignore/api/scala,intellij+all,sbt

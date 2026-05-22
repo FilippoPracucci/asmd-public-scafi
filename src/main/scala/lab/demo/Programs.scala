@@ -1,5 +1,6 @@
 package lab.demo
 
+import akka.japi.Pair
 import it.unibo.scafi.incarnations.BasicAbstractIncarnation
 import it.unibo.scafi.simulation.s2.frontend.incarnation.scafi.bridge.ExportEvaluation.EXPORT_EVALUATION
 import it.unibo.scafi.simulation.s2.frontend.incarnation.scafi.bridge.{ScafiSimulationInitializer, SimulationInfo}
@@ -9,7 +10,7 @@ import it.unibo.scafi.simulation.s2.frontend.incarnation.scafi.bridge.ScafiWorld
 import it.unibo.scafi.simulation.s2.frontend.view.{ViewSetting, WindowConfiguration}
 import it.unibo.scafi.space.graphics2D.BasicShape2D.Circle
 
-import scala.reflect._
+import scala.reflect.*
 
 object Incarnation extends BasicAbstractIncarnation with BuildingBlocks
 import lab.demo.Incarnation._ //import all stuff from an incarnation
@@ -164,6 +165,36 @@ class Main19 extends AggregateProgramSkeleton with BlockT:
   override def main() =
     decay(10000, 0)(_ - 1)
 object Demo19 extends Simulation[Main19]
+
+class Case9 extends AggregateProgramSkeleton:
+  override def main() = branch(sense1){rep(0)(n => if n < 1000 then n + 1 else n)}{0}
+
+object DemoCase9 extends Simulation[Case9]
+
+class Case12 extends AggregateProgramSkeleton:
+  override def main() = foldhood(Set[ID]())(_ ++ _)(nbr({Set[ID](mid)}))
+
+object DemoCase12 extends Simulation[Case12]
+
+class Case8 extends AggregateProgramSkeleton:
+  override def main() = minHoodPlus((nbrRange, nbr{mid}))
+
+object DemoCase8 extends Simulation[Case8]
+
+class Case14 extends AggregateProgramSkeleton:
+  override def main() = rep(0){ x => mid max maxHoodPlus( nbr{x}) }
+
+object DemoCase14 extends Simulation[Case14]
+
+class Case16 extends AggregateProgramSkeleton:
+  def gradient(src: Boolean): Double = rep[Double](Double.PositiveInfinity): x =>
+    mux(src)(0.0):
+      minHoodPlus(nbr(x) + nbrRange)
+
+  override def main() = rep(Double.PositiveInfinity): x =>
+    mux(sense2)(gradient(sense1) * 5)(gradient(sense1))
+
+object DemoCase16 extends Simulation[Case16]
 
 /*
 def gradientPropagation(source: Boolean) = rep((Double.MaxValue, mid)):
